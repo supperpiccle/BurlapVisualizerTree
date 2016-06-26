@@ -1,0 +1,325 @@
+!!burlap.behavior.singleagent.EpisodeAnalysis
+actionSequence: [!action 'generateAlert', !action 'increaseLogVerb', !action 'increaseLogVerb',
+  !action 'increaseLogVerb', !action 'activateFirewall', !action 'increaseLogVerb',
+  !action 'increaseLogVerb', !action 'flowRateLimit', !action 'decreaseLogVerb', !action 'decreaseLogVerb',
+  !action 'flowRateUnlimit', !action 'decreaseLogVerb', !action 'decreaseLogVerb',
+  !action 'decreaseLogVerb']
+rewardSequence: [-1.9708333333333332, -2.033333333333333, -2.033333333333333, -2.033333333333333,
+  -1.9666666666666668, -2.033333333333333, -2.033333333333333, -2.0375, -1.9833333333333334,
+  -1.9833333333333334, -1.9375, -1.9833333333333334, -1.9833333333333334, -1.9833333333333334]
+stateSequence:
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.2'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'false'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '0'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'false'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.2'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'false'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '0'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.2'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'false'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '1'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.2'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'false'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '2'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.2'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'false'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '3'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.2'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'true'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '3'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.2'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'true'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '4'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.2'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'true'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '5'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.0'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'true'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'true'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '5'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.0'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'true'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'true'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '4'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.0'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'true'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'true'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '3'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.0'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'true'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '3'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.0'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'true'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '2'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.0'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'true'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '1'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
+- !!burlap.oomdp.stateserialization.simple.SimpleSerializableState
+  objects:
+  - name: agent0
+    object_class: agent
+    values:
+    - {attribute: pScan, value: '0.0'}
+    - {attribute: pVsftpd, value: '0.0'}
+    - {attribute: pSmbd, value: '0.0'}
+    - {attribute: pPhpCgi, value: '0.0'}
+    - {attribute: pIrcd, value: '0.0'}
+    - {attribute: pDistccd, value: '0.0'}
+    - {attribute: pRmi, value: '0.0'}
+    - {attribute: firewall, value: 'true'}
+    - {attribute: blocked_ips, value: 'false'}
+    - {attribute: flowlimit_ips, value: 'false'}
+    - {attribute: honeypot_ips, value: 'false'}
+    - {attribute: logVerb, value: '0'}
+    - {attribute: active, value: 'true'}
+    - {attribute: quarantined, value: 'false'}
+    - {attribute: rebooted, value: 'false'}
+    - {attribute: alerted, value: 'true'}
