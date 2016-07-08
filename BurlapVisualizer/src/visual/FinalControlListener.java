@@ -8,6 +8,8 @@ import burlap.oomdp.core.states.State;
 import burlap.oomdp.singleagent.RewardFunction;
 import burlapcontroller.actions.CriteriaAction;
 import java.awt.BasicStroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -15,8 +17,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+import javax.swing.event.PopupMenuListener;
 import prefuse.controls.Control;
 import prefuse.controls.ControlAdapter;
 import prefuse.data.Edge;
@@ -120,6 +125,8 @@ public class FinalControlListener extends ControlAdapter implements Control {
     @Override
     public void itemClicked(VisualItem item, MouseEvent e)
     {
+        if(dataDisplay.shouldIgnoreDegredation()) thisVis.degredation = -1;
+        
         deSelectPrevItem();//always deSelect whatever was already selected
         
         if(item == null) //if item is null just update dataDisplay and get out of here
@@ -149,71 +156,148 @@ public class FinalControlListener extends ControlAdapter implements Control {
             TableEdgeItem edge = (TableEdgeItem) item; //get the edgeItem
             handleEdge(edge);//handleEdge takes care of highlighting the edge
         }  
+//        
+//        else if(item.get("type").equals("node") && SwingUtilities.isRightMouseButton(e) && e.isShiftDown())
+//        {
+//            expandSelectedNode(item);
+//        }
         
         else if(item.get("type").equals("node") && SwingUtilities.isRightMouseButton(e))
         {
-//            System.out.println(currentState);
-            List<CriteriaAction> actions = getPathFrom((State) currentState.get("stateClass"), (State) item.get("stateClass"));
-//            System.out.println("According to actions");
-            if(actions != null)
+
+            
+            JPopupMenu popup = new JPopupMenu();
+//            popup.setLocation(e.getXOnScreen(), e.getYOnScreen());
+            JMenuItem gotoStateMenuItem = new JMenuItem("Go to state");
+            JMenuItem expandMenuItem = new JMenuItem("expand");
+
+            ActionListener gotoState = new ActionListener() 
             {
-                for(int i = 0; i < actions.size(); i++) 
+                @Override
+                public void actionPerformed(ActionEvent e) 
                 {
-                    TupleSet edges = thisVis.vis.getGroup("graph.edges");
-                    Iterator<Tuple> iter = edges.tuples();
-                    while(iter.hasNext())
-                    {
-                        Tuple thisEdge = iter.next();
-//                    System.out.println("thisEdge " + thisEdge);
-//                    System.out.println("actions[" + i + "] " + actions.get(i));
-                        if(thisEdge.get("CriteriaAction").equals(actions.get(i)) && thisEdge.get("srcState").equals(currentState.get("stateClass")))
-                        {   
-                            thisEdge.set("weight", 200);
-                            System.out.println("executing " + thisEdge.get("ActionName"));
-
-                        
-                            State first = (State) thisEdge.get("srcState");
-                            State second = (State) thisEdge.get("resultState");
-//                        Edge edge = null;
-                            for(int j = 0; j < thisVis.graph.getNodeCount(); j++)
-                            {
-//                            System.out.println("hery");
-                                if(thisVis.graph.getNode(j).get("stateClass").equals(thisEdge.get("resultState"))) 
-                                {
-//                                    System.out.println("THIS IS A REQUIRED STATEMENT");
-                                    currentState.setStroke(new BasicStroke(0));
-                                    currentState.set("CurrentState", false);
-                                    currentState = (NodeItem) thisVis.vis.getVisualItem("graph.nodes", thisVis.nodes.get(j));
-                                    currentState.set("CurrentState", true);
-                                    currentState.setStroke(new BasicStroke(10));
-                                
-                                
-                                }
-                            }
-                        
-//                        currentState = thisVis.vis.getVisualItem("graph.nodes", )
-                            break;
-//                        thisVis.vis.getVisualItem("graph.edges", thisEdge).set("weight", 200);
-//                        currentState = thisVis.vis.getVisualItem("graph.nodes", )
-                        }
-                    }
-//                    System.out.println(actions.get(i).getName());
+                    goToState(item);
                 }
-            }
-
-        }
-        
-        else if(item.get("type").equals("edge") && SwingUtilities.isRightMouseButton(e) && e.isShiftDown())
-        {
-            try {
-                handleHideEdge(item);
-            } catch (ParseException ex) {
-                Logger.getLogger(FinalControlListener.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            };
+            
+            ActionListener expand = new ActionListener() 
+            {
+                @Override
+                public void actionPerformed(ActionEvent e) 
+                {
+                    expandSelectedNode(item);
+                }
+            };
+            
+            gotoStateMenuItem.addActionListener(gotoState);
+            expandMenuItem.addActionListener(expand);
+            popup.add(gotoStateMenuItem);
+            popup.add(expandMenuItem);
+//            MenuControlListener mcl = new MenuControlListener();
+//            popup.addMouseListener(mcl);
+            
+//            thisVis.d.addMouseListener(mcl);
+            thisVis.panel.add(popup);
+            popup.show(e.getComponent(), e.getX(), e.getY());
+//            return;
+            
+            
+            
         }
         
         else if(item.get("type").equals("edge") && SwingUtilities.isRightMouseButton(e))
         {
+            JPopupMenu popup = new JPopupMenu();
+//            popup.setLocation(e.getXOnScreen(), e.getYOnScreen());
+            JMenuItem executeMenuItem = new JMenuItem("Execute action");
+            JMenuItem hideMenuItem = new JMenuItem("Hide Branch");
+
+            ActionListener execute = new ActionListener() 
+            {
+                @Override
+                public void actionPerformed(ActionEvent e) 
+                {
+                    ChangeCurrentState(item, true);
+                }
+            };
+            
+            ActionListener hideBranch = new ActionListener() 
+            {
+                @Override
+                public void actionPerformed(ActionEvent e) 
+                {
+                    try 
+                    {
+                        handleHideEdge(item);
+                    } 
+                    catch (ParseException ex) 
+                    {
+                        Logger.getLogger(FinalControlListener.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            };
+            
+            executeMenuItem.addActionListener(execute);
+            hideMenuItem.addActionListener(hideBranch);
+            popup.add(executeMenuItem);
+            popup.add(hideMenuItem);
+            MenuControlListener mcl = new MenuControlListener();
+            popup.addMouseListener(mcl);
+            
+//            thisVis.d.addMouseListener(mcl);
+            thisVis.panel.add(popup);
+            popup.show(e.getComponent(), e.getX(), e.getY());
+//            return;
+        }
+
+    }
+        
+    //end public functions
+    //----------------------------------------------------------------------
+    //begin private functions
+    
+    private void expandSelectedNode(Tuple item)
+    {
+        if(item.get("stateClass").equals(thisVis.tree.initialState)) return; //the inital state is already as expanded as its gonna get
+        StateNode clickedState = null;
+        for(int i = 0; i < thisVis.tree.nodes.size(); i++)
+        {
+            if(item.get("stateClass").equals(thisVis.tree.nodes.get(i).s))
+            {
+                clickedState = thisVis.tree.nodes.get(i);
+            }
+        }
+        State currentStateClass = (State) currentState.get("stateClass");
+        for(int i = 0; i < thisVis.graph.getNodeCount(); i++)
+        {
+            if(thisVis.graph.getNode(i).get("stateClass").equals(item.get("stateClass")))
+            {
+                CriteriaAction action = (CriteriaAction) thisVis.graph.getNode(i).getParentEdge().get("CriteriaAction");
+                State prevStateToClicked = (State) thisVis.graph.getNode(i).getParent().get("stateClass");
+//                  thisVis.generateComputeStates(clickedState, action, true);
+                thisVis.addComputeState(clickedState, action, prevStateToClicked);
+//                    thisVis.generateComputeStates(clickedState, action, false);
+                    
+                try {
+                    thisVis.setUpData(false);
+                    thisVis.updateVisualization();
+                    thisVis.rehighlightPath(false, false);
+                    prevNode = null;
+                    prevEdge = null;
+                    thisVis.rehighlightPath(true, false);
+                    this.resetCurrentState();
+                }
+                catch (ParseException ex) {
+                    Logger.getLogger(FinalControlListener.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+        }
+    return;
+    }
+    
+    private void ChangeCurrentState(Tuple item, boolean updateGraph)
+    {
             clickedAction = (CriteriaAction) item.get("CriteriaAction");
 
 //            item.setStroke(new BasicStroke(10));
@@ -223,21 +307,22 @@ public class FinalControlListener extends ControlAdapter implements Control {
 
 
           
-            if(weight == 200.0)
+//            if(weight == 200.0)
+//            {
+//                int inPath = (int) item.get("inPath");
+////                int inPath = item.getInt("inPath");
+//                if(inPath == 1)
+//                {
+//                    item.set("weight", 20);
+//                }
+//                else
+//                {
+//                    item.set("weight", 1.0);
+//                }
+//            }
+            if(!(weight == 200.0) && edge.getSourceNode().getBoolean("CurrentState"))
             {
-                int inPath = (int) item.get("inPath");
-//                int inPath = item.getInt("inPath");
-                if(inPath == 1)
-                {
-                    item.set("weight", 20);
-                }
-                else
-                {
-                    item.set("weight", 1.0);
-                }
-            }
-            else if(!(weight == 200.0) && edge.getSourceNode().getBoolean("CurrentState"))
-            {
+                
 //                JPopupMenu menu = new JPopupMenu();
 //                JMenuItem next = new JMenuItem("Execute action");
 //                JMenuItem take = new JMenuItem("Take me to state");
@@ -256,11 +341,6 @@ public class FinalControlListener extends ControlAdapter implements Control {
                 }
                 
                 System.out.println("executing " + clickedAction.getName());
-                item.set("weight", 200.0);
-                edge.getSourceItem().setStroke(new BasicStroke(0));
-                edge.getSourceNode().set("CurrentState", false);
-                edge.getTargetItem().setStroke(new BasicStroke(10));
-                edge.getTargetNode().set("CurrentState", true);
                 currentState = edge.getTargetItem();
                 double actionReward = (double) edge.get("reward");
                 double stateReward = (double) edge.getTargetNode().get("StateReward");
@@ -269,139 +349,152 @@ public class FinalControlListener extends ControlAdapter implements Control {
                 chosenAVC.addAction((State) edge.getSourceNode().get("stateClass"), (State) edge.getTargetNode().get("stateClass"), clickedAction);
                 double reward = (double) edge.getTargetNode().get("StateReward");
                 chosenSVC.addStateValue(reward);
-
                 chart.update();
-                try {
-                    if(thisVis.chosenStates.size() == 0)
+                try 
+                {
+                    if(thisVis.chosenStates.isEmpty())
                     {
                         thisVis.chosenStates.add((State) edge.getSourceNode().get("stateClass"));
                         thisVis.chosenStates.add((State) edge.getTargetNode().get("stateClass"));
-                        
                     }
                     else
                     {
                         thisVis.chosenStates.add((State) edge.getTargetNode().get("stateClass"));
                     }
-//                    thisVis.chosenEdges.add(edge);
-                    thisVis.generateComputeStates(resultState, clickedAction);
-                    thisVis.setUpData(false);
-//                    thisVis.updateDisplay();
-//                    thisVis.rebootVis();
+                    thisVis.chosenActions.add(clickedAction);
                     
-                    thisVis.setUpVisualization();
-                    thisVis.setUpRenderers();
-                    thisVis.setUpActions();
-                    thisVis.updateDisplay();
-                    thisVis.rehighlightPath();
+                    
+                    thisVis.generateComputeStates(resultState, clickedAction, true);
+                    if(updateGraph)
+                    {
+                        thisVis.setUpData(false);              
+                        thisVis.updateVisualization(); 
+                    }
+                    thisVis.rehighlightPath(true, false);
+                    prevNode = null;
+                    prevEdge = null;
+                    
+                    
+//                    currentState = (NodeItem) edge.getTargetNode();
+                    
+                    for(int i = 0; i < thisVis.graph.getNodeCount(); i++)
+                    {
+                        if(thisVis.graph.getNode(i).getBoolean("CurrentState"))
+                        {
+                            currentState = (NodeItem) thisVis.vis.getVisualItem("graph.nodes", thisVis.graph.getNode(i));
+                        }
+                    }
+                    
 //                chart.addStateValueAndAction(stateReward, actionReward, clickedAction.getName());
                 
 //                Edge edge = (Edge) item.get("Edge");
-                } catch (ParseException ex) {
+                } 
+                catch (ParseException ex) {
                     Logger.getLogger(FinalControlListener.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             
             
-        }
-
     }
-        
-    //end public functions
-    //----------------------------------------------------------------------
-    //begin private functions
     
+    private void goToState(VisualItem item)
+    {
+        ContainerOfActionAndStateSeqence container = getPathFrom((State) currentState.get("stateClass"), (State) item.get("stateClass"), item);
+        if(container != null)
+        {
+            for(int i = 0; i < container.actions.size(); i++) 
+            {
+                TupleSet edges = thisVis.vis.getGroup("graph.edges");
+                Iterator<Tuple> iter = edges.tuples();
+                while(iter.hasNext())
+                {
+                    Tuple thisEdge = iter.next();
+                    if(thisEdge.get("CriteriaAction").equals(container.actions.get(i)) && thisEdge.get("srcState").equals(currentState.get("stateClass")))
+                    {   
+                        if(!thisEdge.get("resultState").equals(container.states.get(i+1)))
+                        {
+                            continue;
+                        }
+                        if(i + 1 == container.actions.size())
+                        {
+                            System.out.println("final time");
+                            ChangeCurrentState(thisEdge, true);
+                        }
+                        else
+                        {
+                            ChangeCurrentState(thisEdge, false);
+                        }
+//                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    private void hideNodes(Node n, Node parent)
+    {
+
+            
+        
+//                    System.out.println("no connection between " + thisVis.temporaryHiddentStateNodes.get(0).s + "\n" + thisVis.temporaryHiddentStateNodes.get(0).connections.get(0).action.getName());
+        if(n.getInDegree() == 1)
+        {
+            List<Node> childNodes = new ArrayList();
+            for(int i = 0; i < n.getChildCount(); i++)
+            {
+                childNodes.add(n.getChild(i));
+            }
+//            thisVis.graph.removeNode(n);
+            thisVis.temporaryHiddenStates.add((State) n.get("stateClass"));
+
+
+            for(int i = 0; i < childNodes.size(); i++)
+            {
+                hideNodes(childNodes.get(i), childNodes.get(i).getParent());
+            }
+        }
+    }
     
     private void handleHideEdge(VisualItem item) throws ParseException
     {
         prevNode = null;
-                prevEdge = null;
-                dataDisplay.setUpCharts("no action", null, null);
-            System.out.println("we are hiding baby");
-            State srcState = (State) item.get("srcState");
-            StateNode srcStateNode;
-            State resultState = (State) item.get("resultState");
-            System.out.println("Src state is " + srcState.getCompleteStateDescription());
-            CriteriaAction act = (CriteriaAction) item.get("CriteriaAction");
-            System.out.println("action to hide is " + act.getName());
+        prevEdge = null;
+        dataDisplay.setUpCharts("no action", null, null);
+        Iterator edges = thisVis.graph.edges();
+        Edge e = null;
+        State src = (State) item.get("srcState");
+        State result = (State) item.get("resultState");
+        while(edges.hasNext())
+        {
+            e = (Edge) edges.next();
+            if(e.get("srcState").equals(src) && e.get("resultState").equals(result))
+            {
+                break;
+            }
+        }
+        Node removeNode = e.getTargetNode();
 
-            
-            
-            
-            
-            
-            for(int i = 0; i < thisVis.tree.nodes.size(); i++)
+        Connection toBeRemoved = new Connection();
+//      ComputeState hey = new ComputeState();
+        StateNode newHiddenStateNode = new StateNode();
+        newHiddenStateNode.s = (State) e.getSourceNode().get("stateClass");
+        toBeRemoved.action = (CriteriaAction) e.get("CriteriaAction");
+        toBeRemoved.states.add((State) e.getTargetNode().get("stateClass"));
+        newHiddenStateNode.connections.add(toBeRemoved);
+        thisVis.temporaryHiddentStateNodes.add(newHiddenStateNode);
+        
+        hideNodes(removeNode, e.getSourceNode());
+            try 
             {
-                if(thisVis.tree.nodes.get(i).s.equals(srcState))
-                {
-                    srcStateNode = thisVis.tree.nodes.get(i);
-                }
-            }
-            
-            for(int i = 0; i < thisVis.tree.nodes.size(); i++)
+              thisVis.setUpData(false);  
+              thisVis.updateVisualization();
+              thisVis.rehighlightPath(true, false);
+              this.resetCurrentState();
+            } 
+            catch (ParseException ex) 
             {
-                if(thisVis.tree.nodes.get(i).s.equals(srcState))
-                {
-                    for(int j = 0; j < thisVis.tree.nodes.get(i).connections.size(); j++)
-                    {
-                        if(thisVis.tree.nodes.get(i).connections.get(j).action.equals(act))
-                        {
-                            for(int k = 0; k < thisVis.tree.nodes.get(i).connections.get(j).states.size(); k++)
-                            {
-                                if(thisVis.tree.nodes.get(i).connections.get(j).states.get(k).equals(resultState))
-                                {
-                                    System.out.println("removeing!");
-                                    thisVis.removedConnections.add(thisVis.tree.nodes.get(i).connections.remove(j));
-                                    if(j != 0) j--;
-                                    break;
-//                                    thisVis.tree.nodes.get(i).connections.get(j).states.remove(k);
-//                                    thisVis.tree.nodes.get(i).connections.get(j).nodes.remove(k);
-//                                    if(k != 0) k--;
-//                                    if(thisVis.tree.nodes.get(i).connections.get(j).states.isEmpty())
-//                                    {
-//                                        Connection remove = thisVis.tree.nodes.get(i).connections.remove(j);
-//                                        j--;
-//                                        break;
-//                                    }
-                                    
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            try {
-            thisVis.setUpData(false);
-            thisVis.setUpVisualization();
-            thisVis.setUpRenderers();
-            thisVis.setUpActions();
-            thisVis.updateDisplay();
-            
-            for(int i = 0; i < thisVis.nodes.size(); i++)
-            {
-                if(thisVis.nodes.get(i).get("CurrentState").equals(true))
-                {
-                    System.out.println("ITS STILL HERE");
-                    currentState = (NodeItem) thisVis.vis.getVisualItem("graph.nodes", thisVis.nodes.get(i));
-                    System.out.println(currentState.getStroke().getLineWidth());
-                    System.out.println("currentState = " + currentState.getClass());
-                    currentState.setSize(10);
-                    currentState.setStroke(new BasicStroke(10));
-                    
-                    thisVis.vis.getVisualItem("graph.nodes", thisVis.graph.getNode(0)).setStroke(new BasicStroke(10));
-//                    thisVis.vis.getVisualItem("graph.nodes", thisVis.nodes.get(i)).setStroke(new BasicStroke(10));
-                }
-            }
-//            thisVis.vis.getVis
-//            thisVis.updateVisualization();
-//            thisVis.setUpVisualization();
-//            thisVis.setUpRenderers();
-//            thisVis.setUpActions();
-//            thisVis.updateDisplay();
-//            thisVis.setUpVisualization();
-            } catch (ParseException ex) {
                 Logger.getLogger(FinalControlListener.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            }
     }
     
     private void deSelectPrevItem()
@@ -512,39 +605,181 @@ public class FinalControlListener extends ControlAdapter implements Control {
         prevNode = null;//if node was selected last go ahead and set that to null
     }
     
-    private List<CriteriaAction> getPathFrom(State starting, State end)
+    private boolean getPathFrom(State end, Node n, List<CriteriaAction> actionList, CriteriaAction act, List<State> stateList)
     {
+        if(actionList == null) actionList = new ArrayList();
+        if(act != null) 
+        {
+            actionList.add(act);
+            stateList.add((State) n.get("stateClass"));
+        }
+        if(n.get("stateClass").equals(end))  
+        {
+            return true;
+        }
+        if(n.getChildCount() == 0) return false;
+        Iterator edges = n.childEdges();
+       
+        List<CriteriaAction> path = null;
+        
+        
+        
+        Iterator iter = n.childEdges();
+        int numOfEdges = 0;
+        while(iter.hasNext())
+        {
+            numOfEdges++;
+            Edge e = (Edge) iter.next();
+            CriteriaAction nextAction = (CriteriaAction) e.get("CriteriaAction");
+            if(getPathFrom(end, e.getTargetNode(), actionList, act, stateList))
+            {
+                if(end.equals(e.getTargetNode().get("stateClass")))
+                {
+                    stateList.add(end);
+                }
+                actionList.add(nextAction);
+                stateList.add((State) n.get("stateClass"));
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private ContainerOfActionAndStateSeqence getPathFrom(State starting, State end, VisualItem item)
+    {
+        Node n = null;
+        for(int i = 0; i < thisVis.graph.getNodeCount(); i++)
+        {
+            if(thisVis.graph.getNode(i).get("stateClass").equals(starting))
+            {
+                n = thisVis.graph.getNode(i);
+            }
+        }
+        List<CriteriaAction> reversePath = new ArrayList<>();
+        List<CriteriaAction> path = new ArrayList();
+        List<State> statePath = new ArrayList();
+        List<State> reverseStatePath = new ArrayList();
+        getPathFrom(end, n, reversePath, null, reverseStatePath);
+        
+        
+        for(int i = reverseStatePath.size() - 1; i >= 0; i--)
+        {
+            statePath.add(reverseStatePath.get(i));
+//            System.out.println(reverseStatePath.get(i));
+        }
+        
+        for(int i = reversePath.size()-1; i >= 0; i--)
+        {
+//            System.out.println("adding action " + reversePath.get(i));
+            path.add(reversePath.get(i));
+        }
+        
+        ContainerOfActionAndStateSeqence container = new ContainerOfActionAndStateSeqence();
+        container.states = statePath;
+        container.actions = path;
+        return container;
+//        for(int i = 0; i < n.getChildCount(); i++)
+//        {
+//            
+//        }
+//        
+//        int startIndex = 0;
+//        int endIndex = 0;
+//        int visibleNum = 0;
 //        System.out.println("Staring" + starting.getCompleteStateDescription());
 //        System.out.println("Ending" + end.getCompleteStateDescription());
-        StateNode startingNode = null;
-        for(int i = 0; i < thisVis.nodeList.size(); i++)
-        {
-            if(thisVis.nodeList.get(i).s.equals(starting)) 
-            {
-                startingNode = thisVis.nodeList.get(i);
-                break;
-            }
-        }
-//        thisVis.generateComputeStates(startingNode); NEED THIS TO WORK LATER
-        List<CriteriaAction> actions = new ArrayList();
-        for(int i = 0; i < thisVis.computableStates.size(); i++)
-        {
-            if(thisVis.computableStates.get(i).thisState.s.equals(end)) 
-            {
-                boolean flag = false;
-                for(int j = 0; j < thisVis.computableStates.get(i).prevStates.size(); j++)
-                {
-                    if(thisVis.computableStates.get(i).prevStates.get(j).s.equals(starting)) flag = true;
-                    if(flag)
-                    {
-                        actions.add(thisVis.computableStates.get(i).prevActions.get(j));
-                    }
-                }
-//                System.out.println("sizeof this crap is " + actions.size());
-                return actions;
-            }
-        }
-        return null;
+//        StateNode startingNode = null;
+//        
+//        List<CriteriaAction> actions = new ArrayList();
+//        for(int i = 0; i < thisVis.nodeList.size(); i++)
+//        {
+//            if(thisVis.nodeList.get(i).s.equals(starting)) 
+//            {
+//                startingNode = thisVis.nodeList.get(i);
+//                break;
+//            }
+//        }
+////        thisVis.generateComputeStates(startingNode); NEED THIS TO WORK LATER
+//        
+//        for(int i = 0; i < thisVis.visibleStates.size(); i++)
+//        {
+////            for(int j = 0; j < thisVis.visibleStates.get(i).size(); j++) System.out.println(thisVis.visibleStates.get(i).get(j).getCompleteStateDescription());
+////            System.out.println(i + " " + thisVis.computableStates.get(i).thisState.s.getCompleteStateDescription());
+//            if(thisVis.visibleStates.get(i).contains(starting) && thisVis.visibleStates.get(i).contains(end)) 
+//            {
+////                System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+//                        
+//                startIndex = thisVis.visibleStates.get(i).indexOf(starting);
+//                endIndex = thisVis.visibleStates.get(i).indexOf(end);
+//                visibleNum = i;
+//                break;
+////                boolean flag = false;
+////                for(int j = 0; j < thisVis.computableStates.get(i).prevStates.size(); j++)
+////                {
+////                    if(thisVis.computableStates.get(i).prevStates.get(j).s.equals(starting)) flag = true;
+////                    if(flag)
+////                    {
+////                        actions.add(thisVis.computableStates.get(i).prevActions.get(j));
+////                    }
+////                }
+//////                System.out.println("sizeof this crap is " + actions.size());
+////                return actions;
+//            }
+//            
+//            
+//        }
+//        
+//        if(thisVis.tree.statesTaken.contains(starting) && thisVis.tree.statesTaken.contains(end))
+//        {
+//            startIndex = thisVis.tree.statesTaken.indexOf(starting);
+//            endIndex = thisVis.tree.statesTaken.indexOf(end);
+//            visibleNum = -1;
+//        }
+//        
+//        if(startIndex == 0 && endIndex == 0)
+//        {
+//            return null;
+//        }
+//        else if(visibleNum != -1)
+//        {
+//            for(int i = startIndex; i < endIndex; i++)
+//            {
+//                actions.add(thisVis.visibleActions.get(visibleNum).get(i));
+//            }
+//        }
+//
+//        else
+//        {
+//            for(int i = startIndex; i < endIndex; i++)
+//            {
+//                actions.add(thisVis.tree.actionsTaken.get(i));
+//            }
+//        }
+//        return actions;
+        
     }
-
+    
+    private void resetCurrentState()
+    {
+        for(int i = 0; i < thisVis.graph.getNodeCount(); i++)
+        {
+            if(thisVis.graph.getNode(i).getBoolean("CurrentState"))
+            {
+                currentState = (NodeItem) thisVis.vis.getVisualItem("graph.nodes", thisVis.graph.getNode(i));
+            }
+        }
+    }
+    
+    
+    class ContainerOfActionAndStateSeqence
+    {
+        List<CriteriaAction> actions;
+        List<State> states;
+        public ContainerOfActionAndStateSeqence()
+        {
+            actions = new ArrayList();
+            states = new ArrayList();
+        }
+    }
 }

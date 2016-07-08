@@ -24,11 +24,29 @@ public class ComputeState
     EpisodeAnalysis ea;
     boolean undoStates;
     CriteriaAction undoAction;
+    boolean validEa = true;
     
     public ComputeState()
     {
         prevActions = new ArrayList();
-        prevStates = new ArrayList();
+        prevStates = new ArrayList<>();
+        ea = new EpisodeAnalysis();
 //        undoStates = new ArrayList();
+    }
+    
+    public List<State> convertToStateList()
+    {
+        List<State> s = new ArrayList();
+        for(int i = 0; i < prevStates.size(); i++)
+        {
+            s.add(prevStates.get(i).s);
+        }
+        s.add(thisState.s);
+        if(ea == null) return s;
+        for(int i = 0; i < ea.stateSequence.size(); i++)
+        {
+            s.add(ea.stateSequence.get(i));
+        }
+        return s;
     }
 }

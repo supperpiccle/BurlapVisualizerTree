@@ -9,7 +9,6 @@ import Tree.StateTree;
 import burlap.oomdp.core.states.State;
 import burlap.oomdp.core.values.Value;
 import burlapcontroller.actions.CriteriaAction;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
@@ -18,14 +17,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import prefuse.visual.VisualItem;
 import BurlapVisualizer.MyController;
-import java.awt.GridLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.JCheckBox;
 
 
 /**
  * This class contains all the info about the visualizer in another window.
  * @author jlewis
  */
-public class DataDisplay {
+public class DataDisplay implements ItemListener
+{
     
     private StateTree tree;
     private List<String> allAttribs;
@@ -47,6 +49,8 @@ public class DataDisplay {
     JLabel rewardTotal;
     JPanel display = null;
     JScrollPane scroll = null;
+    JCheckBox ignoreDegCheckBox;
+    boolean ignoreDegredation = false;
     
     MyController myController;
     List<VisualItem> items;
@@ -60,6 +64,11 @@ public class DataDisplay {
         frame.dispose();
     }
     
+    public boolean shouldIgnoreDegredation()
+    {
+        return ignoreDegredation;
+    }
+    
     /**
      * This set all initially needed data and opens a blank window.
      * @param t The state tree for the state space
@@ -70,6 +79,9 @@ public class DataDisplay {
      */
     public DataDisplay(StateTree t, List<String> allStateAttribs, MyController controller, List<VisualItem> takenActionItems, FinalControlListener fcl)
     {
+        ignoreDegCheckBox = new JCheckBox("Ignore degredation");
+        ignoreDegCheckBox.addItemListener(this);
+        
         this.fcl = fcl;
         items = takenActionItems;
         tree = t;
@@ -179,6 +191,7 @@ public class DataDisplay {
         actionInfo.add(impact);
         actionInfo.add(time);
         actionInfo.add(rewardTotal);
+        actionInfo.add(ignoreDegCheckBox);
         
 
        p.add(list);
@@ -331,6 +344,13 @@ public class DataDisplay {
             }
         }
         return differingValues;
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) 
+    {
+        ignoreDegredation = true;
+        ignoreDegCheckBox.setEnabled(false);
     }
 
 }

@@ -99,7 +99,7 @@ public class Chart extends ApplicationFrame
         if(chosenTimeStep == 1) 
         {
             stateDataset.addSeries(chosenStates);
-            actionDataset.addSeries(chosenActions);
+//            actionDataset.addSeries(chosenActions);
             actionDataset.addSeries(chosenCumulativeActions);
             
             chosenStates.add(0, svc.getStateValues().get(0));
@@ -107,7 +107,7 @@ public class Chart extends ApplicationFrame
             actionRenderer.setSeriesToolTipGenerator(3, new FinalToolTipChart(chosenAVC));
             renderer.setSeriesToolTipGenerator(1, new FinalToolTipChartState((chosenSVC)));
         }
-       chosenActions.add(chosenTimeStep - 1, chosenAVC.getRewards().get(chosenTimeStep - 1));
+//       chosenActions.add(chosenTimeStep - 1, chosenAVC.getRewards().get(chosenTimeStep - 1));
        chosenCumulativeActions.add(chosenTimeStep - 1, chosenAVC.getCumulativeReward().get(chosenTimeStep - 1));
        chosenStates.add(chosenTimeStep, chosenSVC.getStateValues().get(chosenTimeStep - 1));
        chosenTimeStep++;
@@ -121,13 +121,15 @@ public class Chart extends ApplicationFrame
             actionDataset.addSeries(chosenActions);
             
             chosenStates.add(0, svc.getStateValues().get(0));
-
+            actionRenderer.setSeriesToolTipGenerator(1, new FinalToolTipChart(chosenAVC));
+//            actionRenderer.setSeriesToolTipGenerator(3, new FinalToolTipChart(chosenAVC));
+            renderer.setSeriesToolTipGenerator(1, new FinalToolTipChartState((chosenSVC)));
         }
         chosenActions.add(chosenTimeStep - 1, actionReward);
         chosenStates.add(chosenTimeStep, stateValue);
 //        for(int i = 0; i < chosenAVC.)
 
-
+//        update();
         chosenTimeStep++;
    }
    
@@ -153,18 +155,18 @@ public class Chart extends ApplicationFrame
       
       
       actionRenderer.setSeriesToolTipGenerator(0, new FinalToolTipChart(actionValueContainer));
-      actionRenderer.setSeriesToolTipGenerator(1, new FinalToolTipChart(actionValueContainer));
+//      actionRenderer.setSeriesToolTipGenerator(1, new FinalToolTipChart(actionValueContainer));
 
       
 
       actionRenderer.setSeriesPaint( 0 , Color.GREEN );
-      actionRenderer.setSeriesPaint( 1 , Color.GREEN );
-      actionRenderer.setSeriesPaint(2, Color.RED);
-      actionRenderer.setSeriesPaint(3, Color.RED);
+      actionRenderer.setSeriesPaint( 1 , Color.RED );
+//      actionRenderer.setSeriesPaint(2, Color.RED);
+//      actionRenderer.setSeriesPaint(3, Color.RED);
       actionRenderer.setSeriesStroke( 0 , new BasicStroke( 4.0f ) );
       actionRenderer.setSeriesStroke( 1 , new BasicStroke( 4.0f ) );
-      actionRenderer.setSeriesStroke(2, new BasicStroke(4.0f));
-      actionRenderer.setSeriesStroke(3, new BasicStroke(4.0f));
+//      actionRenderer.setSeriesStroke(2, new BasicStroke(4.0f));
+//      actionRenderer.setSeriesStroke(3, new BasicStroke(4.0f));
       actionRenderer.setBaseItemLabelGenerator(new StandardXYItemLabelGenerator("{2}",xFormat,yFormat));
       actionRenderer.setBaseItemLabelsVisible(true);
       
@@ -235,7 +237,7 @@ public class Chart extends ApplicationFrame
            cumulative.add(i, valueContainer.getCumulativeReward().get(i));
        }
        actionDataset = new XYSeriesCollection();
-       actionDataset.addSeries(indivAction);
+//       actionDataset.addSeries(indivAction);
        actionDataset.addSeries(cumulative);
        return actionDataset;
    }

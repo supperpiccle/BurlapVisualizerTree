@@ -48,6 +48,14 @@ public class StateTree {
         return nodes;
     }
     
+    public StateNode getNodeForState(State s)
+    {
+        for(int i = 0; i < nodes.size(); i++)
+        {
+            if(nodes.get(i).s.equals(s)) return nodes.get(i);
+        }
+        return null;
+    }
     
 
     /**

@@ -12,24 +12,33 @@ import java.awt.event.MouseEvent;
  *
  * @author jlewis
  */
-public class MenuControlListener extends MouseAdapter {
+public class MenuControlListener extends MouseAdapter 
+{
+    
+   @Override
+   public void mousePressed(MouseEvent e)
+   {
+       System.out.println("we see yo clicked");
+       
+   }
     
     @Override
     public void mouseClicked(MouseEvent e) 
     {
         System.out.println("here");
+//        this.mousePressed(e);
     }
     @Override
     public void mouseEntered(MouseEvent e)
     {
-        e.getComponent().setFocusable(true);
-        e.getComponent().requestFocus();
+//        e.getComponent().setFocusable(true);
+//        e.getComponent().requestFocus();
         System.out.println("ENTER");
     }
     @Override
     public void mouseExited(MouseEvent e)
     {
-        e.getComponent().setFocusable(false);
+//        e.getComponent().setFocusable(false);
         System.out.println("EXIT");
     }
 }

@@ -20,6 +20,12 @@ import java.util.List;
 public class StateNode {
     public State s; //current state    
     public List<Connection> connections;//each connection represents one action
+    
+    
+    public StateNode()
+    {
+        connections = new ArrayList<>();
+    }
 
     /**
      * This function determines if its state is a final state.
